@@ -4,15 +4,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Link } from 'react-router-dom';
 import Card from '../components/Card';
 import { chapters } from '../data/chapters';
-import videos from '../data/videos.json';
 import {
     FaBookOpen,
-    FaVideo,
     FaHeartbeat,
-    FaArrowRight,
     FaStethoscope,
-    FaLeaf,
-    FaUsers
+    FaUsers,
+    FaArrowRight
 } from 'react-icons/fa';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -183,6 +180,7 @@ const Home = () => {
         );
     }, []);
 
+    // Show latest 5 chapters + "See More"
     const featuredChapters = chapters.slice(0, 5);
 
     return (
@@ -258,13 +256,14 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* 3. CHAPTERS SLIDER (More Cards) */}
+            {/* 3. CHAPTERS SLIDER (Horizontal Scroll) */}
             <section className="chapters-preview">
                 <div className="chapters-header">
                     <h2 className="section-title">Latest Chapters</h2>
                 </div>
                 <div className="soft-frame-top"></div>
-                <div ref={sliderRef} className="chapters-slider">
+
+                <div ref={sliderRef} className="chapters-scroll-container">
                     {featuredChapters.map((chapter, i) => (
                         <div key={chapter.id} className="chapter-slide">
                             <Card title={`Chapter ${chapter.id}`} className="h-full">
@@ -279,7 +278,20 @@ const Home = () => {
                             </Card>
                         </div>
                     ))}
+
+                    {/* "See More" Card */}
+                    <div className="chapter-slide">
+                        <Link to="/chapters" className="see-more-card">
+                            <div className="see-more-content">
+                                <span className="see-more-text">See more chapters</span>
+                                <div className="see-more-icon-wrapper">
+                                    <FaArrowRight />
+                                </div>
+                            </div>
+                        </Link>
+                    </div>
                 </div>
+
                 <div className="soft-frame-bottom"></div>
             </section>
 
@@ -378,14 +390,83 @@ const Home = () => {
         .feature-card { height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
         .card-icon { font-size: 3rem; color: var(--accent-cyan); margin-top: 2rem; opacity: 0.2; align-self: flex-end; }
 
-        /* CHAPTERS SLIDER */
-        .chapters-preview { height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; background: #fff; position: relative; }
+        /* CHAPTERS HORIZONTAL SCROLL */
+        .chapters-preview { 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            overflow: hidden; 
+            background: #fff; 
+            position: relative; 
+        }
         .chapters-header { padding: 0 5%; margin-bottom: 50px; z-index: 2; }
-        .chapters-slider { display: flex; gap: 50px; padding-left: 5%; width: max-content; z-index: 2; }
-        .chapter-slide { width: 350px; height: 450px; position: relative; }
+        
+        .chapters-scroll-container {
+            display: flex;
+            gap: 30px;
+            padding: 20px 5%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+            z-index: 2;
+        }
+        .chapters-scroll-container::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+        
+        .chapter-slide { 
+            min-width: 300px; 
+            width: 350px;
+            height: 450px; 
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            position: relative; 
+        }
+        
         .slide-content { display: flex; flex-direction: column; height: 100%; }
         .slide-icon { font-size: 2.5rem; color: var(--accent-purple); margin-bottom: 1.5rem; }
         .read-more { margin-top: auto; color: var(--primary-pink); font-weight: 700; text-decoration: none; }
+        
+        /* See More Card */
+        .see-more-card {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(135deg, var(--soft-pink), #fff);
+            border-radius: 20px;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border: 2px dashed var(--primary-pink);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px -10px rgba(255, 122, 162, 0.2);
+        }
+        .see-more-card:hover {
+            transform: scale(1.02) translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(255, 122, 162, 0.4);
+            background: #fff;
+        }
+        .see-more-content {
+            text-align: center;
+            color: var(--primary-pink);
+        }
+        .see-more-text {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 800;
+            font-family: var(--font-header);
+            margin-bottom: 1rem;
+        }
+        .see-more-icon-wrapper {
+            font-size: 2rem;
+            transition: transform 0.3s ease;
+        }
+        .see-more-card:hover .see-more-icon-wrapper {
+            transform: translateX(10px);
+        }
+
         .soft-frame-top, .soft-frame-bottom { position: absolute; left: 0; width: 100%; height: 40px; background: repeating-linear-gradient(90deg, var(--accent-cyan), var(--accent-cyan) 2px, transparent 2px, transparent 20px); opacity: 0.1; }
         .soft-frame-top { top: 0; }
         .soft-frame-bottom { bottom: 0; }
@@ -396,8 +477,8 @@ const Home = () => {
         @media (max-width: 768px) {
           .hero-title { font-size: 3rem; }
           .chapters-preview { height: auto; padding: 100px 0; }
-          .chapters-slider { flex-direction: column; width: 100%; padding: 0 20px; }
-          .chapter-slide { width: 100%; height: auto; }
+          .chapters-scroll-container { padding: 20px 20px; gap: 20px; }
+          .chapter-slide { width: 85vw; min-width: 85vw; height: 400px; }
           .ui-circle { width: 300px; height: 300px; }
         }
       `}</style>
