@@ -31,45 +31,65 @@ const Home = () => {
         // 1. Initial Soft Bloom (Load Animation - Re-themed)
         const tl = gsap.timeline();
 
-        tl.to(heroRef.current, { opacity: 1, duration: 0.5 })
+        tl.to(heroRef.current, { opacity: 1, duration: 0.8 })
             .fromTo(gridRef.current,
-                { scale: 1.5, opacity: 0, rotationX: 45 },
+                { scale: 1.2, opacity: 0, rotationX: 45 },
                 { scale: 1, opacity: 0.6, rotationX: 20, duration: 2.5, ease: "power2.out" }
             )
             .fromTo(titleRef.current,
-                { opacity: 0, y: 50, filter: "blur(10px)" },
-                { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.5, ease: "power3.out" },
+                { opacity: 0, y: 80, filter: "blur(12px)" },
+                { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.8, ease: "power3.out" },
                 "-=2"
             )
             .fromTo(subtitleRef.current,
-                { opacity: 0, y: 20 },
+                { opacity: 0, y: 30 },
                 { opacity: 1, y: 0, duration: 1, ease: "power2.out" },
-                "-=1"
+                "-=1.2"
+            )
+            .fromTo(".hero-cta",
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" },
+                "-=0.8"
             );
 
-        // 2. Parallax Effect (Gentle Float)
+        // 2. Advanced Parallax Effect (Multi-layer)
         const handleMouseMove = (e) => {
             const { clientX, clientY } = e;
             const xPos = (clientX / window.innerWidth - 0.5);
             const yPos = (clientY / window.innerHeight - 0.5);
 
+            // Grid moves slowly
             gsap.to(gridRef.current, {
-                rotationX: 20 + yPos * 2,
-                rotationY: xPos * 2,
-                x: xPos * 10,
-                duration: 1.5
+                rotationX: 20 + yPos * 5,
+                rotationY: xPos * 5,
+                x: xPos * 20,
+                duration: 2,
+                ease: "power2.out"
             });
 
+            // Particles move faster (depth)
             gsap.to(particlesRef.current, {
-                x: xPos * 30,
-                y: yPos * 30,
-                duration: 2
+                x: xPos * 60,
+                y: yPos * 60,
+                duration: 1.5,
+                ease: "power2.out"
             });
 
+            // Content moves opposite (float)
             gsap.to(contentRef.current, {
-                x: xPos * -15,
-                y: yPos * -15,
-                duration: 1.5
+                x: xPos * -30,
+                y: yPos * -30,
+                duration: 1.5,
+                ease: "power2.out"
+            });
+
+            // UI Circles move wildly
+            gsap.to(uiRef.current, {
+                x: xPos * -80,
+                y: yPos * -80,
+                rotation: xPos * 20,
+                duration: 2.5,
+                ease: "power2.out"
             });
         };
 
@@ -80,36 +100,89 @@ const Home = () => {
         Array.from(particles).forEach((p, i) => {
             gsap.to(p, {
                 y: -window.innerHeight,
-                x: "random(-50, 50)",
-                rotation: "random(0, 360)",
-                duration: "random(10, 20)",
+                x: `random(-100, 100)`,
+                rotation: `random(0, 360)`,
+                duration: `random(15, 30)`,
                 repeat: -1,
                 ease: "none",
-                delay: "random(0, 10)"
+                delay: `random(0, 15)`
             });
         });
 
-        // Horizontal Scroll for Chapters (Ported from Projects Slider)
-        const slider = sliderRef.current;
-        if (slider) {
-            gsap.to(slider, {
-                x: () => -(slider.scrollWidth - window.innerWidth),
-                ease: "none",
-                scrollTrigger: {
-                    trigger: ".chapters-preview",
-                    start: "top top",
-                    end: () => "+=" + slider.scrollWidth,
-                    scrub: 1,
-                    pin: true,
-                    anticipatePin: 1
-                }
-            });
-        }
+        // Button Tilt Effect
+        const buttons = document.querySelectorAll('.btn-tilt');
+        buttons.forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
 
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            ScrollTrigger.getAll().forEach(t => t.kill());
-        };
+                const rotateX = ((y - centerY) / centerY) * -15;
+                const rotateY = ((x - centerX) / centerX) * 15;
+
+                gsap.to(btn, {
+                    rotateX: rotateX,
+                    rotateY: rotateY,
+                    scale: 1.1,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, {
+                    rotateX: 0,
+                    rotateY: 0,
+                    scale: 1,
+                    duration: 0.5,
+                    ease: "elastic.out(1, 0.5)"
+                });
+            });
+        });
+
+        // 4. Scroll Reveal Animations
+        const sections = [
+            '.highlights-section',
+            '.features-strip',
+            '.big-feature-section',
+            '.chapters-preview',
+            '.cta-section'
+        ];
+
+        sections.forEach(section => {
+            gsap.fromTo(section,
+                { y: 50, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top 80%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        });
+
+        // Staggered Cards Reveal
+        gsap.fromTo(".feature-card",
+            { y: 50, opacity: 0 },
+            {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: ".features-grid",
+                    start: "top 85%"
+                }
+            }
+        );
     }, []);
 
     const featuredChapters = chapters.slice(0, 5);
@@ -128,13 +201,14 @@ const Home = () => {
 
                 {/* Layer 3: Floating Petals/Particles */}
                 <div ref={particlesRef} className="layer-particles">
-                    {[...Array(15)].map((_, i) => (
+                    {[...Array(20)].map((_, i) => (
                         <div key={i} className="soft-particle" style={{
                             left: `${Math.random() * 100}%`,
                             top: '110%',
-                            scale: Math.random() * 0.5 + 0.5,
-                            opacity: Math.random() * 0.4 + 0.1,
-                            backgroundColor: i % 2 === 0 ? 'var(--accent-cyan)' : 'var(--accent-purple)'
+                            width: `${Math.random() * 15 + 5}px`,
+                            height: `${Math.random() * 15 + 5}px`,
+                            opacity: Math.random() * 0.3 + 0.1,
+                            backgroundColor: i % 3 === 0 ? 'var(--accent-cyan)' : (i % 3 === 1 ? 'var(--accent-purple)' : '#fff')
                         }}></div>
                     ))}
                 </div>
@@ -146,6 +220,7 @@ const Home = () => {
                 <div ref={uiRef} className="hero-ui">
                     <div className="ui-circle circle-1"></div>
                     <div className="ui-circle circle-2"></div>
+                    <div className="ui-circle circle-3"></div>
                 </div>
 
                 <div ref={contentRef} className="hero-content">
@@ -157,14 +232,14 @@ const Home = () => {
                         Your trusted companion for menstrual health, reproductive wellness, and holistic self-care.
                     </p>
                     <div className="hero-cta">
-                        <Link to="/chapters" className="btn-primary">Start Learning</Link>
-                        <Link to="/about" className="btn-secondary">Our Mission</Link>
+                        <Link to="/chapters" className="btn-primary btn-tilt">Start Learning</Link>
+                        <Link to="/about" className="btn-secondary btn-tilt">Our Mission</Link>
                     </div>
                 </div>
             </section>
 
-            {/* Features Section (Ported from Tech Highlights) */}
-            <section className="features-section">
+            {/* 2. HIGHLIGHTS SECTION (Cards) */}
+            <section className="highlights-section">
                 <div className="section-header">
                     <h2 className="section-title">Why HerHealth?</h2>
                     <div className="header-line"></div>
@@ -185,7 +260,50 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Chapters Slider (Ported from Projects Slider) */}
+            {/* 3. FEATURES STRIP (Icons) */}
+            <section className="features-strip">
+                <div className="strip-item">
+                    <FaLeaf className="strip-icon" />
+                    <span>Natural Wellness</span>
+                </div>
+                <div className="strip-item">
+                    <FaUsers className="strip-icon" />
+                    <span>Community Support</span>
+                </div>
+                <div className="strip-item">
+                    <FaStethoscope className="strip-icon" />
+                    <span>Expert Advice</span>
+                </div>
+                <div className="strip-item">
+                    <FaHeartbeat className="strip-icon" />
+                    <span>Holistic Care</span>
+                </div>
+            </section>
+
+            {/* 4. BIG FEATURED SECTION (Split Layout) */}
+            <section className="big-feature-section">
+                <div className="big-feature-content">
+                    <h2 className="big-title">Your Health, <br /> <span className="text-gradient">Reimagined.</span></h2>
+                    <p className="big-desc">
+                        Access a library of resources designed to help you understand your body better.
+                        From menstrual tracking to mental health support, we're here for you every step of the way.
+                    </p>
+                    <Link to="/resources" className="btn-primary btn-tilt">Explore Resources</Link>
+                </div>
+                <div className="big-feature-visual">
+                    <div className="visual-circle"></div>
+                    <div className="visual-card">
+                        <div className="visual-icon"><FaHeartbeat /></div>
+                        <span>Daily Tracking</span>
+                    </div>
+                    <div className="visual-card card-2">
+                        <div className="visual-icon"><FaBookOpen /></div>
+                        <span>Expert Guides</span>
+                    </div>
+                </div>
+            </section>
+
+            {/* 5. CHAPTERS SLIDER (More Cards) */}
             <section className="chapters-preview">
                 <div className="chapters-header">
                     <h2 className="section-title">Latest Chapters</h2>
@@ -213,16 +331,16 @@ const Home = () => {
             {/* CTA Footer */}
             <section className="cta-section">
                 <h2 className="section-title">Ready to take control?</h2>
-                <Link to="/resources" className="btn-primary pulse-btn">Open Symptom Tracker</Link>
+                <Link to="/resources" className="btn-primary pulse-btn btn-tilt">Open Symptom Tracker</Link>
             </section>
 
-            <style jsx>{`
+            <style>{`
         .home-page {
           overflow-x: hidden;
           background: var(--bg-color);
         }
 
-        /* HERO SECTION */
+        /* HERO SECTION STYLES */
         .hero-section {
           height: 100vh;
           width: 100vw;
@@ -234,253 +352,187 @@ const Home = () => {
           perspective: 1000px;
           opacity: 0;
         }
-
-        .layer-bg {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 50% 50%, #fff0f5 0%, #fff 100%);
-            z-index: 0;
+        
+        .layer-bg { 
+            position: absolute; 
+            inset: 0; 
+            background: linear-gradient(-45deg, #fff5f7, #fae8f1, #ffd3e2, #fff0f5);
+            background-size: 400% 400%;
+            animation: moving-gradient 15s ease infinite;
+            z-index: 0; 
         }
-
-        .layer-grid {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          z-index: 1;
-          transform-style: preserve-3d;
-        }
-
-        .grid-plane {
-          position: absolute;
-          bottom: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background-image: 
-            linear-gradient(var(--tron-grid-color) 1px, transparent 1px),
-            linear-gradient(90deg, var(--tron-grid-color) 1px, transparent 1px);
-          background-size: 80px 80px;
-          opacity: 0.5;
-          mask-image: linear-gradient(to top, black 20%, transparent 80%);
-        }
-
-        .layer-particles {
-          position: absolute;
-          inset: 0;
-          z-index: 2;
-          pointer-events: none;
-        }
-
-        .soft-particle {
-          position: absolute;
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          filter: blur(2px);
-        }
-
-        .hero-ui {
-          position: absolute;
-          inset: 0;
-          z-index: 3;
-          pointer-events: none;
-        }
-
-        .ui-circle {
-            position: absolute;
-            border-radius: 50%;
-            border: 1px solid var(--accent-cyan);
-            opacity: 0.1;
-        }
+        
+        .layer-grid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; transform-style: preserve-3d; }
+        .grid-plane { position: absolute; bottom: -50%; left: -50%; width: 200%; height: 200%; background-image: linear-gradient(var(--tron-grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--tron-grid-color) 1px, transparent 1px); background-size: 80px 80px; opacity: 0.5; mask-image: linear-gradient(to top, black 20%, transparent 80%); }
+        .layer-particles { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+        .soft-particle { position: absolute; border-radius: 50%; filter: blur(2px); }
+        .hero-ui { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+        .ui-circle { position: absolute; border-radius: 50%; border: 1px solid var(--accent-cyan); opacity: 0.1; }
         .circle-1 { width: 600px; height: 600px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
         .circle-2 { width: 400px; height: 400px; top: 50%; left: 50%; transform: translate(-50%, -50%); border-style: dashed; }
+        .circle-3 { width: 800px; height: 800px; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px dotted var(--accent-purple); animation: spin 60s linear infinite; }
+        @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-        .hero-content {
-          position: relative;
-          z-index: 5;
-          text-align: center;
-          max-width: 900px;
-          padding: 0 20px;
+        .hero-content { position: relative; z-index: 5; text-align: center; max-width: 900px; padding: 0 20px; }
+        .hero-title { 
+            font-size: 5rem; 
+            line-height: 1.1; 
+            margin-bottom: 2rem; 
+            color: var(--text-color); 
+            font-weight: 800; 
+            font-family: var(--font-header);
+            animation: pulseText 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulseText {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 122, 162, 0.1); }
+            50% { text-shadow: 0 0 40px rgba(255, 122, 162, 0.3); }
         }
 
-        .hero-title {
-          font-size: 5rem;
-          line-height: 1.1;
-          margin-bottom: 2rem;
-          color: var(--text-color);
-          font-weight: 800;
-          font-family: var(--font-header);
+        .text-gradient { background: linear-gradient(to right, var(--primary-pink), var(--secondary-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-subtitle { font-size: 1.5rem; color: #64748b; margin: 0 auto 3rem; font-family: var(--font-body); max-width: 600px; }
+        .hero-cta { display: flex; gap: 1rem; justify-content: center; }
+        
+        .btn-primary { 
+            padding: 1rem 2.5rem; 
+            background: var(--primary-pink); 
+            color: white; 
+            border-radius: 50px; 
+            font-weight: 700; 
+            text-decoration: none; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: 0 10px 20px -5px rgba(255, 122, 162, 0.4); 
+            display: inline-block; 
         }
-
-        .text-gradient {
-            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        
+        .btn-primary:hover { 
+            transform: scale(1.03) translateY(-2px); 
+            box-shadow: 0 20px 40px -5px rgba(255, 122, 162, 0.6); 
+            background: var(--accent-blue);
         }
+        
+        .btn-secondary { padding: 1rem 2.5rem; background: white; color: var(--text-color); border: 1px solid #e2e8f0; border-radius: 50px; font-weight: 700; text-decoration: none; transition: all 0.3s; display: inline-block; }
+        .btn-secondary:hover { background: #f8fafc; border-color: var(--primary-pink); color: var(--primary-pink); }
 
-        .hero-subtitle {
-          font-size: 1.5rem;
-          color: #64748b;
-          margin: 0 auto 3rem;
-          font-family: var(--font-body);
-          max-width: 600px;
-        }
+        /* HIGHLIGHTS SECTION */
+        .highlights-section { padding: 120px 5%; max-width: 1400px; margin: 0 auto; position: relative; z-index: 10; }
+        .section-header { margin-bottom: 80px; text-align: center; }
+        .section-title { font-size: 3rem; font-family: var(--font-header); color: var(--text-color); margin-bottom: 1rem; }
+        .header-line { width: 100px; height: 4px; background: var(--primary-pink); margin: 0 auto; border-radius: 2px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .feature-card { height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-icon { font-size: 3rem; color: var(--accent-cyan); margin-top: 2rem; opacity: 0.2; align-self: flex-end; }
 
-        .hero-cta {
+        /* FEATURES STRIP */
+        .features-strip {
             display: flex;
-            gap: 1rem;
+            justify-content: space-around;
+            padding: 60px 5%;
+            background: white;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            margin: 50px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .strip-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .strip-icon {
+            font-size: 1.5rem;
+            color: var(--primary-pink);
+        }
+
+        /* BIG FEATURE SECTION */
+        .big-feature-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            padding: 120px 10%;
+            align-items: center;
+            background: linear-gradient(135deg, #fff5f7 0%, #fff 100%);
+        }
+        .big-title {
+            font-size: 3.5rem;
+            font-family: var(--font-header);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+        .big-desc {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #64748b;
+            margin-bottom: 2.5rem;
+        }
+        .big-feature-visual {
+            position: relative;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .visual-circle {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-cyan) 0%, transparent 70%);
+            opacity: 0.1;
+            position: absolute;
+        }
+        .visual-card {
+            position: absolute;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+            border: 1px solid var(--glass-border);
+            animation: float 6s ease-in-out infinite;
+        }
+        .visual-card.card-2 {
+            top: 20%;
+            right: 10%;
+            animation-delay: -3s;
+        }
+        .visual-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-pink);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
             justify-content: center;
         }
-
-        .btn-primary {
-            padding: 1rem 2.5rem;
-            background: var(--accent-blue);
-            color: white;
-            border-radius: 50px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 10px 20px -5px rgba(236, 64, 122, 0.4);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px -5px rgba(236, 64, 122, 0.5);
-        }
-
-        .btn-secondary {
-            padding: 1rem 2.5rem;
-            background: white;
-            color: var(--text-color);
-            border: 1px solid #e2e8f0;
-            border-radius: 50px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .btn-secondary:hover {
-            background: #f8fafc;
-            border-color: #cbd5e1;
-        }
-
-        /* FEATURES SECTION */
-        .features-section {
-          padding: 120px 5%;
-          max-width: 1400px;
-          margin: 0 auto;
-          position: relative;
-          z-index: 10;
-        }
-
-        .section-header {
-          margin-bottom: 80px;
-          text-align: center;
-        }
-
-        .section-title {
-            font-size: 3rem;
-            font-family: var(--font-header);
-            color: var(--text-color);
-            margin-bottom: 1rem;
-        }
-
-        .header-line {
-          width: 100px;
-          height: 4px;
-          background: var(--accent-blue);
-          margin: 0 auto;
-          border-radius: 2px;
-        }
-
-        .features-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 40px;
-        }
-
-        .feature-card {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card-icon {
-            font-size: 3rem;
-            color: var(--accent-cyan);
-            margin-top: 2rem;
-            opacity: 0.2;
-            align-self: flex-end;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
         /* CHAPTERS SLIDER */
-        .chapters-preview {
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          overflow: hidden;
-          background: #fff;
-          position: relative;
-        }
-
-        .chapters-header {
-            padding: 0 5%;
-            margin-bottom: 50px;
-            z-index: 2;
-        }
-
-        .chapters-slider {
-          display: flex;
-          gap: 50px;
-          padding-left: 5%;
-          width: max-content;
-          z-index: 2;
-        }
-
-        .chapter-slide {
-          width: 350px;
-          height: 450px;
-          position: relative;
-        }
-
-        .slide-content {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .slide-icon {
-            font-size: 2.5rem;
-            color: var(--accent-purple);
-            margin-bottom: 1.5rem;
-        }
-
-        .read-more {
-            margin-top: auto;
-            color: var(--accent-blue);
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        .soft-frame-top, .soft-frame-bottom {
-          position: absolute;
-          left: 0;
-          width: 100%;
-          height: 40px;
-          background: repeating-linear-gradient(90deg, var(--accent-cyan), var(--accent-cyan) 2px, transparent 2px, transparent 20px);
-          opacity: 0.1;
-        }
+        .chapters-preview { height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; background: #fff; position: relative; }
+        .chapters-header { padding: 0 5%; margin-bottom: 50px; z-index: 2; }
+        .chapters-slider { display: flex; gap: 50px; padding-left: 5%; width: max-content; z-index: 2; }
+        .chapter-slide { width: 350px; height: 450px; position: relative; }
+        .slide-content { display: flex; flex-direction: column; height: 100%; }
+        .slide-icon { font-size: 2.5rem; color: var(--accent-purple); margin-bottom: 1.5rem; }
+        .read-more { margin-top: auto; color: var(--primary-pink); font-weight: 700; text-decoration: none; }
+        .soft-frame-top, .soft-frame-bottom { position: absolute; left: 0; width: 100%; height: 40px; background: repeating-linear-gradient(90deg, var(--accent-cyan), var(--accent-cyan) 2px, transparent 2px, transparent 20px); opacity: 0.1; }
         .soft-frame-top { top: 0; }
         .soft-frame-bottom { bottom: 0; }
 
         /* CTA SECTION */
-        .cta-section {
-          padding: 150px 20px;
-          text-align: center;
-          background: radial-gradient(circle at center, rgba(236, 64, 122, 0.05), transparent 70%);
-        }
+        .cta-section { padding: 150px 20px; text-align: center; background: radial-gradient(circle at center, rgba(255, 122, 162, 0.05), transparent 70%); }
 
         @media (max-width: 768px) {
           .hero-title { font-size: 3rem; }
@@ -488,6 +540,9 @@ const Home = () => {
           .chapters-slider { flex-direction: column; width: 100%; padding: 0 20px; }
           .chapter-slide { width: 100%; height: auto; }
           .ui-circle { width: 300px; height: 300px; }
+          .big-feature-section { grid-template-columns: 1fr; padding: 80px 5%; gap: 40px; text-align: center; }
+          .big-feature-visual { height: 300px; }
+          .features-strip { flex-direction: column; align-items: center; gap: 30px; }
         }
       `}</style>
         </div>
