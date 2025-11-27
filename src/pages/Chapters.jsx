@@ -12,7 +12,7 @@ const Chapters = () => {
     );
 
     return (
-        <div className="min-h-screen bg-gray-50/50 pb-24">
+        <div className="min-h-screen bg-[var(--bg-color)] pb-24">
             <PageHeader
                 title="Educational Chapters"
                 subtitle="Explore our comprehensive guide to women's health, organized for easy learning."

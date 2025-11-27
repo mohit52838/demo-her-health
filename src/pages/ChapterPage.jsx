@@ -63,10 +63,10 @@ const ChapterPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="min-h-screen bg-brand-bg pb-24"
+            className="min-h-screen bg-[var(--bg-color)] pb-24"
         >
             {/* Header */}
-            <div className="bg-gradient-to-b from-pink-50 to-white border-b border-pink-100 py-20 px-6 mb-12">
+            <div className="bg-gradient-to-b from-pink-50 to-white border-b border-pink-100 pt-32 pb-20 px-6 mb-12">
                 <div className="max-w-4xl mx-auto text-center">
                     <Link to="/chapters" className="inline-flex items-center text-sm text-slate-500 hover:text-brand-primary mb-8 transition-colors bg-white px-5 py-2.5 rounded-full shadow-sm border border-slate-100 font-medium hover:shadow-md">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

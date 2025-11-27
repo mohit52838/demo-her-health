@@ -1,36 +1,42 @@
 @import "tailwindcss";
 
 :root {
-  /* HerHealth Theme - Strict Izzz-Demo Match */
-  --bg-color: #fff5f7;
-  --primary-pink: #ff7aa2;
+  /* HerHealth Theme - Strict Match */
+  --bg-color: #fff5fa;
+  /* Soft Pink */
+  --primary-pink: #e6007e;
+  /* Primary Pink */
   --secondary-pink: #ff89b5;
-  --soft-pink: #ffd3e2;
-  --bg-pink: #fae8f1;
-  --accent-blue: #ec407a;
-  /* Keeping for compatibility, mapped to deep pink */
-  --accent-cyan: #ff7aa2;
-  /* Mapped to primary pink */
-  --accent-purple: #ff89b5;
-  /* Mapped to secondary pink */
+  /* Kept for gradients/accents */
+  --soft-pink: #ffccdd;
+  /* Baby Pink */
+  --bg-pink: #fff5fa;
+  --accent-blue: #e6007e;
+  /* Mapped to Primary for consistency */
+  --accent-cyan: #e6007e;
+  /* Mapped to Primary */
+  --accent-purple: #d63384;
+  /* Darker pink for contrast */
 
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 122, 162, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(230, 0, 126, 0.2);
 
-  --text-color: #334155;
+  --text-color: #1f2937;
+  /* Heading Color */
+  --text-body: #4b5563;
 
   --font-header: 'Playfair Display', serif;
   --font-body: 'Inter', sans-serif;
 
   /* Soft Pink Glow */
-  --neon-glow: 0 0 15px rgba(255, 122, 162, 0.4), 0 0 30px rgba(255, 122, 162, 0.2);
-  --tron-grid-color: rgba(255, 122, 162, 0.08);
+  --neon-glow: 0 0 15px rgba(230, 0, 126, 0.3), 0 0 30px rgba(230, 0, 126, 0.1);
+  --tron-grid-color: rgba(230, 0, 126, 0.05);
 }
 
 @theme {
-  --color-brand-primary: #ff7aa2;
+  --color-brand-primary: #e6007e;
   --color-brand-secondary: #ff89b5;
-  --color-brand-accent: #ffd3e2;
+  --color-brand-accent: #ffccdd;
   --font-display: "Playfair Display", serif;
   --font-body: "Inter", sans-serif;
 }
@@ -103,4 +109,33 @@ button:active,
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--secondary-pink);
+}
+
+/* Strict Prose Overrides for Content Restoration */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: var(--text-color) !important;
+  font-family: var(--font-header);
+}
+
+.prose a {
+  color: var(--primary-pink) !important;
+  text-decoration: none;
+  border-bottom: 1px solid var(--primary-pink);
+}
+
+.prose a:hover {
+  color: var(--secondary-pink) !important;
+  border-bottom-color: var(--secondary-pink);
+}
+
+.prose strong {
+  color: var(--text-color);
+  font-weight: 700;
+}
+
+.prose ul>li::marker {
+  color: var(--primary-pink);
 }

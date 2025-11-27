@@ -242,15 +242,15 @@ const Home = () => {
                 </div>
                 <div className="features-grid">
                     <Card title="Expert Knowledge" className="feature-card">
-                        <p>Medically verified content from trusted sources.</p>
+                        <p>Access medically verified information curated by health professionals to ensure you get accurate and reliable advice.</p>
                         <div className="card-icon"><FaStethoscope /></div>
                     </Card>
-                    <Card title="Holistic Care" className="feature-card">
-                        <p>Focusing on physical, mental, and emotional well-being.</p>
+                    <Card title="Holistic Approach" className="feature-card">
+                        <p>We focus on the whole person—physical, mental, and emotional well-being—because health is more than just the absence of disease.</p>
                         <div className="card-icon"><FaHeartbeat /></div>
                     </Card>
-                    <Card title="Community" className="feature-card">
-                        <p>Join a supportive network of women sharing their journeys.</p>
+                    <Card title="Safe Community" className="feature-card">
+                        <p>Join a supportive, judgment-free environment where you can share experiences and learn from others on similar journeys.</p>
                         <div className="card-icon"><FaUsers /></div>
                     </Card>
                 </div>
@@ -279,11 +279,11 @@ const Home = () => {
                         </div>
                     ))}
 
-                    {/* "See More" Card */}
+                    {/* "View All Chapters" Card */}
                     <div className="chapter-slide">
                         <Link to="/chapters" className="see-more-card">
                             <div className="see-more-content">
-                                <span className="see-more-text">See more chapters</span>
+                                <span className="see-more-text">View All Chapters</span>
                                 <div className="see-more-icon-wrapper">
                                     <FaArrowRight />
                                 </div>

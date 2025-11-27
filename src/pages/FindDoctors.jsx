@@ -98,7 +98,7 @@ const FindDoctors = () => {
     }, [facilities, filters]);
 
     return (
-        <div className="min-h-screen bg-[#fff5fa] pt-24 pb-10 px-4 sm:px-6 lg:px-8 font-poppins">
+        <div className="min-h-screen bg-[#fff5fa] pt-32 pb-10 px-4 sm:px-6 lg:px-8 font-poppins">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
 
                 {/* Sidebar - Results List (Left on Desktop) */}
