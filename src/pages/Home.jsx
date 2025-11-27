@@ -330,7 +330,6 @@ const Home = () => {
 
             <style>{`
         .home-page {
-          overflow-x: hidden;
           background: var(--bg-color);
         }
 
