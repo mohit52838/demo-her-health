@@ -100,7 +100,7 @@ const Home = () => {
                 y: -window.innerHeight,
                 x: `random(-100, 100)`,
                 rotation: `random(0, 360)`,
-                duration: `random(15, 30)`,
+                duration: `random(10, 25)`,
                 repeat: -1,
                 ease: "none",
                 delay: `random(0, 15)`
@@ -224,7 +224,7 @@ const Home = () => {
 
                 {/* Layer 3: Floating Petals/Particles */}
                 <div ref={particlesRef} className="layer-particles">
-                    {[...Array(20)].map((_, i) => (
+                    {[...Array(50)].map((_, i) => (
                         <div key={i} className="soft-particle" style={{
                             left: `${Math.random() * 100}%`,
                             top: '110%',
