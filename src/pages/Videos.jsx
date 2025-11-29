@@ -62,7 +62,7 @@ const Videos = () => {
     }, [videos, selectedCategory, showOfficialOnly, searchQuery]);
 
     return (
-        <div className="min-h-screen bg-[#fff5fa] pt-24 md:pt-32 pb-12 px-4 sm:px-6 lg:px-8 font-poppins">
+        <div className="min-h-screen bg-[#fff5fa] pt-32 pb-12 px-4 sm:px-6 lg:px-8 font-poppins">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8 text-center md:text-left">
@@ -127,17 +127,5 @@ const Videos = () => {
         </div>
     );
 };
-
-// Toggle body class for video modal
-useEffect(() => {
-    if (currentVideo) {
-        document.body.classList.add('video-open');
-    } else {
-        document.body.classList.remove('video-open');
-    }
-    return () => {
-        document.body.classList.remove('video-open');
-    };
-}, [currentVideo]);
 
 export default Videos;

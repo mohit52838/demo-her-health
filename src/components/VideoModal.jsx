@@ -29,10 +29,11 @@ const VideoModal = ({ video, onClose }) => {
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="absolute top-0 right-0 z-50 p-4">
+                <div className="flex justify-between items-center p-4 bg-gradient-to-r from-pink-900/20 to-transparent absolute top-0 left-0 right-0 z-10 pointer-events-none">
+                    <h3 className="text-white font-bold text-lg drop-shadow-md opacity-0">Playing Video</h3>
                     <button
                         onClick={onClose}
-                        className="bg-black/60 hover:bg-pink-600 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-md group shadow-lg border border-white/10"
+                        className="pointer-events-auto bg-black/50 hover:bg-pink-600 text-white p-2 rounded-full transition-all duration-300 backdrop-blur-md group"
                         aria-label="Close modal"
                     >
                         <FaTimes className="text-xl group-hover:rotate-90 transition-transform" />

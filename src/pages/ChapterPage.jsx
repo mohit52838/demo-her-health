@@ -86,26 +86,13 @@ const ChapterPage = () => {
 
             <div className="max-w-6xl mx-auto px-6">
                 <div className="flex flex-col lg:flex-row gap-16">
-                    {/* Sidebar (TOC) - Desktop */}
+                    {/* Sidebar (TOC) */}
                     <aside className="hidden lg:block w-72 flex-shrink-0">
                         <TOC content={content} />
                     </aside>
 
-                    {/* Mobile TOC (Dropdown) */}
-                    <div className="lg:hidden mb-8">
-                        <details className="bg-white p-4 rounded-xl border border-pink-100 shadow-sm">
-                            <summary className="font-bold text-brand-primary cursor-pointer flex justify-between items-center">
-                                Table of Contents
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                            </summary>
-                            <div className="mt-4 pt-4 border-t border-slate-100">
-                                <TOC content={content} />
-                            </div>
-                        </details>
-                    </div>
-
                     {/* Main Content */}
-                    <main className="flex-grow max-w-3xl mx-auto lg:mx-0 chapter-content">
+                    <main className="flex-grow max-w-3xl mx-auto lg:mx-0">
                         {loading ? (
                             <div className="flex justify-center py-20">
                                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary"></div>
@@ -115,7 +102,7 @@ const ChapterPage = () => {
                                 {error}
                             </div>
                         ) : (
-                            <article className="prose lg:prose-lg prose-pink max-w-none leading-relaxed bg-white p-6 md:p-12 rounded-2xl shadow-sm border border-pink-50">
+                            <article className="prose lg:prose-lg prose-pink max-w-none leading-relaxed bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-pink-50">
                                 <div dangerouslySetInnerHTML={{ __html: content }} />
                             </article>
                         )}
