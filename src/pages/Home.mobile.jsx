@@ -50,97 +50,27 @@ const Home = () => {
                 "-=0.8"
             );
 
-        // 2. Advanced Parallax Effect (Multi-layer)
-        const handleMouseMove = (e) => {
-            const { clientX, clientY } = e;
-            const xPos = (clientX / window.innerWidth - 0.5);
-            const yPos = (clientY / window.innerHeight - 0.5);
+        // 2. Simplified Parallax for Mobile (Gyroscope/Tilt or just Auto-float)
+        // Removing heavy mousemove/touchmove parallax for smoother scrolling
 
-            // Grid moves slowly
-            gsap.to(gridRef.current, {
-                rotationX: 20 + yPos * 5,
-                rotationY: xPos * 5,
-                x: xPos * 20,
-                duration: 2,
-                ease: "power2.out"
-            });
-
-            // Particles move faster (depth)
-            gsap.to(particlesRef.current, {
-                x: xPos * 60,
-                y: yPos * 60,
-                duration: 1.5,
-                ease: "power2.out"
-            });
-
-            // Content moves opposite (float)
-            gsap.to(contentRef.current, {
-                x: xPos * -30,
-                y: yPos * -30,
-                duration: 1.5,
-                ease: "power2.out"
-            });
-
-            // UI Circles move wildly
-            gsap.to(uiRef.current, {
-                x: xPos * -80,
-                y: yPos * -80,
-                rotation: xPos * 20,
-                duration: 2.5,
-                ease: "power2.out"
-            });
-        };
-
-        window.addEventListener('mousemove', handleMouseMove);
-
-        // 3. Continuous Animations (Floating Petals)
+        // 3. Continuous Animations (Floating Petals) - Slower and smoother
         const particles = particlesRef.current.children;
         Array.from(particles).forEach((p, i) => {
             gsap.to(p, {
                 y: -window.innerHeight,
-                x: `random(-100, 100)`,
+                x: `random(-50, 50)`, // Reduced lateral movement
                 rotation: `random(0, 360)`,
-                duration: `random(10, 25)`,
+                duration: `random(15, 30)`, // Slower duration
                 repeat: -1,
                 ease: "none",
                 delay: `random(0, 15)`
             });
         });
 
-        // Button Tilt Effect
-        const buttons = document.querySelectorAll('.btn-tilt');
-        buttons.forEach(btn => {
-            btn.addEventListener('mousemove', (e) => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
+        // Button Tilt Effect - Removed for mobile to prevent touch interference
+        // Kept simple scale on active state via CSS
 
-                const rotateX = ((y - centerY) / centerY) * -15;
-                const rotateY = ((x - centerX) / centerX) * 15;
-
-                gsap.to(btn, {
-                    rotateX: rotateX,
-                    rotateY: rotateY,
-                    scale: 1.1,
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
-            });
-
-            btn.addEventListener('mouseleave', () => {
-                gsap.to(btn, {
-                    rotateX: 0,
-                    rotateY: 0,
-                    scale: 1,
-                    duration: 0.5,
-                    ease: "elastic.out(1, 0.5)"
-                });
-            });
-        });
-
-        // 4. Scroll Reveal Animations
+        // 4. Scroll Reveal Animations - Optimized
         const sections = [
             '.highlights-section',
             '.cta-section'
@@ -148,15 +78,15 @@ const Home = () => {
 
         sections.forEach(section => {
             gsap.fromTo(section,
-                { y: 50, opacity: 0 },
+                { y: 30, opacity: 0 }, // Reduced distance
                 {
                     y: 0,
                     opacity: 1,
-                    duration: 1,
-                    ease: "power3.out",
+                    duration: 0.8, // Faster reveal
+                    ease: "power2.out",
                     scrollTrigger: {
                         trigger: section,
-                        start: "top 80%",
+                        start: "top 85%", // Trigger earlier
                         toggleActions: "play none none reverse"
                     }
                 }
@@ -165,59 +95,26 @@ const Home = () => {
 
         // Staggered Cards Reveal (Highlights)
         gsap.fromTo(".feature-card",
-            { y: 50, opacity: 0 },
+            { y: 30, opacity: 0 },
             {
                 y: 0,
                 opacity: 1,
-                duration: 0.8,
-                stagger: 0.2,
-                ease: "power3.out",
+                duration: 0.6,
+                stagger: 0.1, // Faster stagger
+                ease: "power2.out",
                 scrollTrigger: {
                     trigger: ".features-grid",
-                    start: "top 85%"
+                    start: "top 90%"
                 }
             }
         );
 
-        // 5. Horizontal Scroll (Native-friendly with Wheel Support)
+        // 5. Horizontal Scroll - Native is usually smoother on mobile, but keeping wheel support if needed
+        // We will rely on CSS scroll-snap for the main interaction which is native and smooth
         const container = sliderContainerRef.current;
-        let handleWheel;
 
-        if (container) {
-            handleWheel = (e) => {
-                // Only hijack scroll if we have horizontal content to scroll
-                if (container.scrollWidth > container.clientWidth) {
-                    // Prevent vertical scroll
-                    e.preventDefault();
-
-                    // Calculate target scroll position
-                    // Multiplier 3.0 for fast but controlled speed
-                    const scrollAmount = e.deltaY * 3.0;
-                    const currentScroll = container.scrollLeft;
-                    let targetScroll = currentScroll + scrollAmount;
-
-                    // Clamp target to bounds
-                    targetScroll = Math.max(0, Math.min(targetScroll, container.scrollWidth - container.clientWidth));
-
-                    // Use GSAP for smooth scrolling
-                    gsap.to(container, {
-                        scrollLeft: targetScroll,
-                        duration: 0.5,
-                        ease: "power2.out",
-                        overwrite: true
-                    });
-                }
-            };
-
-            // Add non-passive listener to allow preventDefault
-            container.addEventListener('wheel', handleWheel, { passive: false });
-        }
-
+        // Cleanup
         return () => {
-            if (container && handleWheel) {
-                container.removeEventListener('wheel', handleWheel);
-            }
-            window.removeEventListener('mousemove', handleMouseMove);
             ScrollTrigger.getAll().forEach(t => t.kill());
         };
     }, []);
@@ -240,14 +137,15 @@ const Home = () => {
                 {/* Layer 3: Floating Petals/Particles */}
                 <div ref={particlesRef} className="layer-particles">
                     {
-                        [...Array(30)].map((_, i) => ( // Reduced particles for mobile performance
+                        [...Array(15)].map((_, i) => ( // Reduced particles to 15 for mobile smoothness
                             <div key={i} className="soft-particle" style={{
                                 left: `${Math.random() * 100}%`,
                                 top: '110%',
-                                width: `${Math.random() * 10 + 5}px`,
-                                height: `${Math.random() * 10 + 5}px`,
+                                width: `${Math.random() * 8 + 4}px`, // Slightly smaller
+                                height: `${Math.random() * 8 + 4}px`,
                                 opacity: Math.random() * 0.3 + 0.1,
-                                backgroundColor: i % 3 === 0 ? 'var(--accent-cyan)' : (i % 3 === 1 ? 'var(--accent-purple)' : '#fff')
+                                backgroundColor: i % 3 === 0 ? 'var(--accent-cyan)' : (i % 3 === 1 ? 'var(--accent-purple)' : '#fff'),
+                                willChange: 'transform' // Hint for browser optimization
                             }}></div>
                         ))
                     }
