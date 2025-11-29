@@ -4,7 +4,7 @@ import { FaHeart } from 'react-icons/fa';
 
 const Footer = () => {
     return (
-        <footer className="bg-white border-t border-pink-100 pt-8 pb-6">
+        <footer className="bg-white border-t border-pink-100 pt-8 pb-6 relative z-50">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                     {/* Column 1: Brand & Mission */}

@@ -97,6 +97,16 @@ const ChapterPage = () => {
                             </div>
                         ) : (
                             <article className="prose prose-lg prose-pink max-w-none leading-relaxed bg-white p-10 rounded-3xl shadow-sm border border-pink-50">
+                                {/* Tablet TOC */}
+                                <div className="mb-8 p-6 bg-pink-50/50 rounded-2xl border border-pink-100">
+                                    <h3 className="text-lg font-bold text-slate-800 mb-3 font-display">In this chapter</h3>
+                                    <nav className="flex flex-col gap-2">
+                                        <div className="text-sm text-slate-500 italic">
+                                            Scroll down to read full chapter
+                                        </div>
+                                    </nav>
+                                </div>
+
                                 <div dangerouslySetInnerHTML={{ __html: content }} />
                             </article>
                         )}

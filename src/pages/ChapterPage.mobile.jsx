@@ -66,18 +66,38 @@ const ChapterPage = () => {
             className="min-h-screen bg-[var(--bg-color)] pb-20"
         >
             {/* Mobile Header */}
-            <div className="bg-white border-b border-pink-100 pt-24 pb-8 px-5">
-                <Link to="/chapters" className="inline-flex items-center text-sm text-slate-500 hover:text-brand-primary mb-6 transition-colors bg-gray-50 px-4 py-2 rounded-full font-medium">
+            <div className="bg-white border-b border-pink-100 pt-24 pb-6 px-5">
+                <Link to="/chapters" className="inline-flex items-center text-sm text-slate-500 hover:text-brand-primary mb-4 transition-colors bg-gray-50 px-4 py-2 rounded-full font-medium">
                     <FaArrowLeft className="mr-2 text-xs" />
                     Back
                 </Link>
-                <h1 className="text-3xl font-extrabold text-slate-900 mb-3 font-display leading-tight">
-                    <span className="block text-brand-primary text-xs font-bold mb-2 uppercase tracking-widest">Chapter {chapter.id}</span>
+                <h1 className="text-2xl font-extrabold text-slate-900 mb-2 font-display leading-tight">
+                    <span className="block text-brand-primary text-xs font-bold mb-1 uppercase tracking-widest">Chapter {chapter.id}</span>
                     {chapter.title}
                 </h1>
-                <p className="text-base text-slate-600 leading-relaxed">
+                <p className="text-sm text-slate-600 leading-relaxed mb-4">
                     {chapter.description}
                 </p>
+
+                {/* Collapsible TOC */}
+                <details className="group bg-pink-50 rounded-xl border border-pink-100 overflow-hidden">
+                    <summary className="flex items-center justify-between p-4 cursor-pointer list-none font-bold text-slate-800 text-sm">
+                        <span>Table of Contents</span>
+                        <span className="transition-transform group-open:rotate-180">
+                            <FaChevronRight className="rotate-90" />
+                        </span>
+                    </summary>
+                    <div className="px-4 pb-4 pt-0 border-t border-pink-100/50">
+                        <nav className="mt-2 flex flex-col gap-2">
+                            {/* We need to parse headings from content or use a simplified TOC for mobile */}
+                            {/* For now, we'll use a simple anchor link approach if TOC component isn't compatible */}
+                            {/* Or better, reuse the TOC component logic but simplified */}
+                            <div className="text-xs text-slate-500 italic">
+                                Scroll down to read full chapter
+                            </div>
+                        </nav>
+                    </div>
+                </details>
             </div>
 
             <div className="px-5 mt-8">

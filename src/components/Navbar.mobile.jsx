@@ -183,7 +183,7 @@ const Navbar = () => {
                 }
 
                 .logo-emoji {
-                    font-size: 1.6rem; /* Slightly smaller */
+                    font-size: 1.4rem; /* Reduced size */
                     transition: transform 0.3s ease;
                 }
                 
@@ -193,7 +193,7 @@ const Navbar = () => {
 
                 .logo-text {
                     font-family: var(--font-header);
-                    font-size: 1.3rem; /* Slightly smaller */
+                    font-size: 1.2rem; /* Reduced size */
                     font-weight: 800;
                     color: var(--text-color);
                     letter-spacing: -0.5px;
@@ -206,13 +206,13 @@ const Navbar = () => {
                 .mobile-toggle {
                     background: none;
                     border: none;
-                    font-size: 1.8rem; /* Larger icon */
+                    font-size: 1.6rem; /* Slightly smaller icon */
                     color: var(--text-color);
                     cursor: pointer;
                     position: relative;
                     z-index: 10;
-                    padding: 0.5rem; /* Larger tap target */
-                    margin-right: -0.5rem; /* Compensate for padding */
+                    padding: 0.5rem;
+                    margin-right: 0; /* Fixed alignment */
                     display: flex;
                     align-items: center;
                     justify-content: center;
