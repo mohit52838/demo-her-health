@@ -187,20 +187,34 @@ const Home = () => {
             handleWheel = (e) => {
                 // Only hijack scroll if we have horizontal content to scroll
                 if (container.scrollWidth > container.clientWidth) {
-                    // Prevent vertical scroll
-                    e.preventDefault();
-
-                    // Calculate target scroll position
-                    // Multiplier 3.0 for fast but controlled speed
                     // Dynamic multiplier: Higher for trackpads (small delta), lower for mice (large delta)
                     const isTrackpad = Math.abs(e.deltaY) < 50;
                     const multiplier = isTrackpad ? 20.0 : 10.0;
                     const scrollAmount = e.deltaY * multiplier;
                     const currentScroll = container.scrollLeft;
+                    const maxScroll = container.scrollWidth - container.clientWidth;
+
+                    // Check if we are at the boundaries and trying to scroll past them
+                    // Use a small tolerance (1px) for float precision issues
+                    const atStart = currentScroll <= 1;
+                    const atEnd = currentScroll >= maxScroll - 1;
+                    const scrollingUp = e.deltaY < 0;
+                    const scrollingDown = e.deltaY > 0;
+
+                    if ((atStart && scrollingUp) || (atEnd && scrollingDown)) {
+                        // Manually scroll the window to prevent "stuck" feeling
+                        window.scrollBy({ top: e.deltaY, behavior: 'auto' });
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // Prevent vertical scroll and hijack for horizontal
+                    e.preventDefault();
+
                     let targetScroll = currentScroll + scrollAmount;
 
                     // Clamp target to bounds
-                    targetScroll = Math.max(0, Math.min(targetScroll, container.scrollWidth - container.clientWidth));
+                    targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
 
                     // Use GSAP for smooth scrolling
                     gsap.to(container, {
